@@ -3,8 +3,7 @@ package application_layer;
 import service_layer.DatagramMessage;
 import service_layer.MyServerDatagramSocket;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by t00175569 on 10/11/2016.
@@ -15,10 +14,19 @@ public class FtpServer {
 
     public static void main(String[] args) {
 
-        Map<String, String> users = new HashMap<>();
-        users.put("cgriffin", "password1");
+        //creating some hardcoded system users
+        List<User> registeredUsers = new ArrayList<>();
+        User one = new User("a", "a");
+        User two = new User("dtrump", "maga");
+        User three = new User("hclinton", "emailserver");
+        registeredUsers.add(one);
+        registeredUsers.add(two);
+        registeredUsers.add(three);
 
-        int serverPort = 7;    // default port
+        List<String> loggedOn = new ArrayList<>();
+
+
+        int serverPort = 1024;    // default port
         if (args.length == 1)
             serverPort = Integer.parseInt(args[0]);
         try {
@@ -33,11 +41,10 @@ public class FtpServer {
 
                 switch (protocalMessage.getCode()){
                     case 1000 :
-                        response = logOnRequest(protocalMessage,users);
+                        response = logOnRequest(protocalMessage, registeredUsers, loggedOn);
                 }
                 // Now send the echo to the requestor
-                mySocket.sendMessage(request.getAddress(),
-                        request.getPort(), response);
+                mySocket.sendMessage(request.getAddress(), request.getPort(), response);
             } //end while
         } // end try
         catch (Exception ex) {
@@ -54,10 +61,18 @@ public class FtpServer {
 //        }
 //    }
 
-    public static String logOnRequest(ProtocolMessage protocolMessage, Map<String,String> users) {
-        System.out.println("FtpServer.logOnRequest");
-        return (users.get(protocolMessage.getDeckOne()));
+    public static String logOnRequest(ProtocolMessage protocolMessage, List registered, List active) {
 
+        User sentUser = new User(protocolMessage.getDeckOne(), protocolMessage.getDeckTwo());
+
+        if(registered.equals(sentUser)) {
+            if(!active.contains((sentUser.getUserName())))
+                active.add(sentUser.getUserName());
+            return "1010-ULO-" + sentUser.getUserName() + " is logged on";
+        }
+        else {
+            return "1020-UNF-" + sentUser.getUserName() + " does not match";
+        }
 
     }
 }
