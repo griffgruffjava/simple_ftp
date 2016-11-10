@@ -13,7 +13,7 @@ public class ClientDriver {
     public static void main(String[] args) {
 
         try {
-            FtpClient ftpClient = new FtpClient("localhost", "9");
+            FtpClient ftpClient = new FtpClient("localhost", "7");
             ftpClient.logOn("cgriffin","password");
         }
         catch (Exception e) {
