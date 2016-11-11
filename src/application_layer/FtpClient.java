@@ -21,6 +21,12 @@ public class FtpClient {
         this.clientSocket = new MyClientDatagramSocket();
     }
 
+    public String registerUser(String username, String password) throws SocketException, IOException {
+        String protocolMsg = "900-REG-" + username + "-" + password;
+        clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
+        return clientSocket.receiveMessage();
+    }
+
     public String logOn(String username, String password) throws SocketException, IOException {
         String protocolMsg = "1000-LON-" + username + "-" + password;
         clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
@@ -29,6 +35,12 @@ public class FtpClient {
 
     public String logOff(String username, String password) throws SocketException, IOException {
         String protocolMsg = "1100-LOFF-" + username + "-" + password;
+        clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
+        return clientSocket.receiveMessage();
+    }
+
+    public String uploadFile(String username, String path) throws SocketException, IOException {
+        String protocolMsg = "1200-UPLOAD-" + username + "-" + path;
         clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
         return clientSocket.receiveMessage();
     }

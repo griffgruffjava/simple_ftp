@@ -15,10 +15,16 @@ public class ClientDriver {
 
         try {
             FtpClient ftpClient = new FtpClient("localhost", "1024");
+
             String response = ftpClient.logOn("cgriffin","password");
+
+            response = ftpClient.registerUser("donald_trump","maga");
             JOptionPane.showMessageDialog(null, response);
-            response = ftpClient.logOff("cgriffin","password");
-            JOptionPane.showMessageDialog(null, response);
+//            response = ftpClient.logOff("cgriffin","password");
+//            JOptionPane.showMessageDialog(null, response);
+
+
+
 
 
         }

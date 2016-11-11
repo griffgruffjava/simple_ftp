@@ -3,6 +3,7 @@ package application_layer;
 import service_layer.DatagramMessage;
 import service_layer.MyServerDatagramSocket;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +41,17 @@ public class FtpServer {
                 ProtocolMessage protocalMessage = new ProtocolMessage(request.getMessage());
 
                 switch (protocalMessage.getCode()) {
+                    case 900:
+                        response = registerRequest(protocalMessage, registeredUsers);
+                        break;
                     case 1000:
                         response = logOnRequest(protocalMessage, registeredUsers, loggedOn);
                         break;
                     case 1100:
                         response = logOffRequest(protocalMessage, registeredUsers, loggedOn);
+                        break;
+                    case 1200:
+                        response = uploadRequest(protocalMessage, loggedOn);
                         break;
                 }
                 // Now send the echo to the requestor
@@ -64,6 +71,22 @@ public class FtpServer {
 //            return -1;
 //        }
 //    }
+
+    public static String registerRequest(ProtocolMessage protocolMessage, List registered) {
+        User sentUser = new User(protocolMessage.getDeckOne(), protocolMessage.getDeckTwo());
+        if(userNameNotUsed(sentUser.getUserName(), registered)){
+            try {
+                createDir(sentUser.getUserName());
+                registered.add(sentUser);
+                return "910-SUCCESS-" + sentUser.getUserName() + " is now registered";
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return "920-ERROR- cannot register user";
+        }
+
+        return "930-ERROR-" + sentUser.getUserName() + " username is already registered";
+    }
 
     public static String logOnRequest(ProtocolMessage protocolMessage, List registered, List active) {
 
@@ -94,6 +117,16 @@ public class FtpServer {
 
     }
 
+    public static String uploadRequest(ProtocolMessage protocolMessage, List active){
+
+//        if(active.contains(protocolMessage.getDeckOne())){
+//            try{
+//
+//            }
+//        }
+        return null;
+    }
+
 
     public static boolean registeredAndVerified(User sentUser, List registered){
 
@@ -106,6 +139,29 @@ public class FtpServer {
         }
         return false;
     }
+
+    public static boolean userNameNotUsed(String username, List registered){
+        for (Object u : registered) {
+            User temp = (User) u;
+            if (temp.getUserName().equals(username)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean createDir(String dir) {
+        String path = "C:\\"+dir;
+        try {
+            new File(path).mkdir();
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+
 
 
 
