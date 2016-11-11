@@ -18,6 +18,7 @@ public class FtpServer {
 
     public static void main(String[] args) {
 
+
         //creating some hardcoded system users
         List<User> registeredUsers = new ArrayList<>();
         User one = new User("cgriffin", "password");
@@ -55,6 +56,10 @@ public class FtpServer {
                         break;
                     case 1200:
                         response = uploadRequest(protocalMessage, loggedOn);
+                        break;
+                    case 1300:
+                        ProtocolMessage pm = downloadRequest(protocalMessage, loggedOn);
+                        response = pm.toString();
                         break;
                 }
                 // Now send the echo to the requestor
@@ -123,35 +128,35 @@ public class FtpServer {
     public static String uploadRequest(ProtocolMessage protocolMessage, List active){
 
         if(active.contains(protocolMessage.getDeckOne())){
-            try{
-                String load = protocolMessage.getDeckTwo();
-                String saveAs;
-                String content;
-                int splitIndex = load.indexOf(":");
-                saveAs = load.substring(0,splitIndex);
-                content = load.substring(splitIndex+1,load.length());
-                String pathToSave = "C:\\"+protocolMessage.getDeckOne()+"\\"+ saveAs + ".txt";
-//                String pathToSave = "C:\\testFile.txt";
-                File file = new File(pathToSave);
-
-                //http://www.mkyong.com/java/how-to-write-to-file-in-java-bufferedwriter-example/
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
-                FileWriter fw = new FileWriter(file.getAbsoluteFile());
-                BufferedWriter bw = new BufferedWriter(fw);
-                bw.write(content);
-                bw.close();
-
-                return "1210-SUCCESS-" + saveAs + " has been uploaded to server";
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "1220-ERROR- server failure; file cannot be saved";
+            if(FileUtils.writeContentToFile(protocolMessage)){
+                return "1210-SUCCESS-"+ FileUtils.getSaveAs(protocolMessage.getDeckTwo()) + " has been saved to server";
+            }else{
+                return "1220-ERROR-"+ FileUtils.getSaveAs(protocolMessage.getDeckTwo()) + " cannot be saved to server";
             }
 
+
         }
-        return "1230-ERROR-" + protocolMessage.getDeckOne() + " is not logged on; file cannot be saved";
+        return "1230-ERROR-" + protocolMessage.getDeckOne() + " is not logged on; file cannot be saved to server";
+    }
+
+    public static ProtocolMessage downloadRequest(ProtocolMessage protocolMessage, List active){
+        ProtocolMessage response = new ProtocolMessage();
+        if(active.contains(protocolMessage.getDeckOne())){
+            String path = "C:\\" + protocolMessage.getDeckOne() + "\\" + protocolMessage.getDeckTwo();
+            String serverFile = FileUtils.getFileContent(path);
+            response.setCode(1315);
+            response.setCall("PROCESS");
+            response.setDeckOne(protocolMessage.getDeckOne());
+            response.setDeckTwo(serverFile);
+            return response;
+
+        }
+        response.setCode(1330);
+        response.setCall("ERROR");
+        response.setDeckOne(protocolMessage.getDeckOne());
+        response.setDeckTwo(" is not logged on; no files can be retrieved");
+        return response;
+
     }
 
 

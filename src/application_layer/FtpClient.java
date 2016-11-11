@@ -17,6 +17,7 @@ public class FtpClient {
     private MyClientDatagramSocket clientSocket;
     private InetAddress serverHost;
     private int serverPort;
+    private FileUtils fileUtils;
 
     public FtpClient(String hostName, String portNum) throws SocketException, UnknownHostException {
         this.serverHost = InetAddress.getByName(hostName);
@@ -43,33 +44,31 @@ public class FtpClient {
     }
 
     public String uploadFile(String username, String path, String saveAs) throws SocketException, IOException {
-        String protocolMsg = "1200-UPLOAD-" + username + "-" + saveAs + ":" +getFileContent(path);
+        String protocolMsg = "1200-UPLOAD-" + username + "-" + saveAs + ":" +fileUtils.getFileContent(path);
         clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
         return clientSocket.receiveMessage();
+    }
+
+    public String downloadFile(String username, String filename) throws SocketException, IOException {
+        String protocolMsg = "1300-DOWNLOAD-"+ username + "-" + filename;
+        clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
+        ProtocolMessage response = new ProtocolMessage(clientSocket.receiveMessage());
+        if(response.getCode()==1315){
+            if (FileUtils.writeContentToFile(response)) {
+                response.setDeckTwo("file saved locally");
+            }
+            else {
+                response.setCode(1325);
+                response.setCall("ERROR");
+                response.setDeckTwo("file cannot be saved locally");
+            }
+        }
+        return response.toString();
     }
 
     public void closeSocket() throws SocketException {
         clientSocket.close();
     }
 
-    public static String getFileContent(String path){
 
-
-        String content = "";
-        try {
-
-            Path path1 = Paths.get(path);
-            content = new String(Files.readAllBytes(path1));
-
-
-        }catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return content;
-
-
-    }
 }

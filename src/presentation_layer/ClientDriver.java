@@ -23,7 +23,8 @@ public class ClientDriver {
 //            response = ftpClient.logOff("cgriffin","password");
 //            JOptionPane.showMessageDialog(null, response);
 
-            response = ftpClient.uploadFile("cgriffin", "C:\\MyFile.txt", "testFile");
+            response = ftpClient.uploadFile("cgriffin", "C:\\MyFile.txt", "anotherOne");
+//            response = ftpClient.downloadFile("cgriffin", "testFile");
             JOptionPane.showMessageDialog(null, response);
 
             ftpClient.closeSocket();

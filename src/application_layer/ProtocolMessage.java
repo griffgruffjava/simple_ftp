@@ -14,6 +14,8 @@ public class ProtocolMessage {
         splitMessage(message.trim());
     }
 
+    public ProtocolMessage(){}
+
     public void splitMessage(String message){
         String[] sections = message.split("-");
         setCode(Integer.parseInt(sections[0]));
@@ -54,6 +56,8 @@ public class ProtocolMessage {
         this.deckTwo = deckTwo;
     }
 
-
+    public String toString(){
+        return code + "-" + call + "-" + deckOne + "-" + deckTwo;
+    }
 
 }
