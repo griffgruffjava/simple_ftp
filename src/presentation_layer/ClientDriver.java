@@ -29,7 +29,7 @@ public class ClientDriver {
             FtpClient ftpClient = new FtpClient("localhost", "1024");
 
             while(menuOneChoice!=3){
-                System.out.print("Welcome to Simple_FTP " +
+                System.out.print("\nWelcome to Simple_FTP " +
                         "\n\nHOME Menu:\n" +
                         "To register <enter 1>\n" +
                         "To login <enter 2>\n" +
@@ -85,13 +85,29 @@ public class ClientDriver {
                                     System.out.println("Sorry, an error occurred. Your file has not been uploaded.");
                                 }
                             }
+
+                            if(menuTwoChoice==3){
+                                response = ftpClient.logOff(user,password);
+                                if(PresentationUtils.getCode(response)==1110){
+                                    System.out.println(user + " has been logged out. ");
+                                }else{
+                                    System.out.println("Error - can not logout user; exiting system!\n\n");
+                                    menuOneChoice = 3;
+                                }
+                            }
                         }
+                    } else {
+                        System.out.println("\nThe login details provided are not correct\n\n");
                     }
 
-                    System.out.println("\nThe login details provided are not correct\n\n");
+
+
+
 
 
                 }
+
+
 
 
             }
