@@ -26,7 +26,7 @@ public class FtpClient {
     }
 
     public String registerUser(String username, String password) throws SocketException, IOException {
-        String protocolMsg = "900-REG-" + username + "-" + password;
+        String protocolMsg = "1900-REG-" + username + "-" + password;
         clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
         return clientSocket.receiveMessage();
     }

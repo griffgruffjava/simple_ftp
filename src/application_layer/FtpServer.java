@@ -23,12 +23,12 @@ public class FtpServer {
 
         //creating some hardcoded system users
         List<User> registeredUsers = new ArrayList<>();
-        User one = new User("cgriffin", "password");
+//        User one = new User("cgriffin", "password");
 //        User two = new User("donald_trump", "maga");
-        User three = new User("hclinton", "emailserver");
-        registeredUsers.add(one);
+//        User three = new User("hclinton", "emailserver");
+//        registeredUsers.add(one);
 //        registeredUsers.add(two);
-        registeredUsers.add(three);
+//        registeredUsers.add(three);
 
         List<String> loggedOn = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class FtpServer {
                 ProtocolMessage protocalMessage = new ProtocolMessage(request.getMessage());
 
                 switch (protocalMessage.getCode()) {
-                    case 900:
+                    case 1900:
                         response = registerRequest(protocalMessage, registeredUsers);
                         break;
                     case 1000:
@@ -73,14 +73,7 @@ public class FtpServer {
         } // end catch
     }
 
-//    public static int grabCode(String message) {
-//        try {
-//            return Integer.parseInt(message.substring(0, 3));
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//            return -1;
-//        }
-//    }
+
 
     public static String registerRequest(ProtocolMessage protocolMessage, List registered) {
         User sentUser = new User(protocolMessage.getDeckOne(), protocolMessage.getDeckTwo());
@@ -88,14 +81,14 @@ public class FtpServer {
             try {
                 FileUtils.createDir("ftp_server",sentUser.getUserName());
                 registered.add(sentUser);
-                return "910-SUCCESS-" + sentUser.getUserName() + " is now registered";
+                return "1910-SUCCESS-" + sentUser.getUserName() + " is now registered";
             }catch (Exception e){
                 e.printStackTrace();
             }
-            return "920-ERROR- cannot register user";
+            return "1920-ERROR- cannot register user";
         }
 
-        return "930-ERROR-" + sentUser.getUserName() + " username is already registered";
+        return "1930-ERROR-" + sentUser.getUserName() + " username is already registered";
     }
 
     public static String logOnRequest(ProtocolMessage protocolMessage, List registered, List active) {

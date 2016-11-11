@@ -19,7 +19,7 @@ public class ClientDriver {
         try {
 
             int menuOneChoice=0;
-            int menuTwoChoice;
+            int menuTwoChoice=0;
             String user;
             String password;
             String response;
@@ -44,25 +44,56 @@ public class ClientDriver {
                     password = input.next();
                     response = ftpClient.registerUser(user,password);
 
+                    if(PresentationUtils.getCode(response)==910){
+                        System.out.println("\n\nRegistration Successful.\n" +
+                                            "username: "+ user +
+                                            "password: "+ password);
+                    }else if(PresentationUtils.getCode(response)==930){
+                        System.out.println("\n\nSorry, This username is already used.");
+                    }else{
+                        System.out.println("\n\nSorry, not able to register those details at this time.");
+                    }
                     System.out.println(response);
                 }
 
                 if(menuOneChoice==2){
-                    System.out.print("\n\nYou are now logged on.\n" +
-                            "ACTION Menu\n" +
-                            "To upload <enter 1>\n" +
-                            "To download <enter 2>\n" +
-                            "To log off <enter 3>\n" +
-                            "Enter choice:");
-                    menuTwoChoice = input.nextInt();
-                    if(menuTwoChoice == 1){
-                        System.out.print("enter file path:");
-                        path = input.next();
-                        System.out.print("enter title for file:");
-                        title = input.next();
+                    System.out.print("Enter username:");
+                    user = input.next();
+                    System.out.print("Enter password:");
+                    password = input.next();
+                    response = ftpClient.logOn(user, password);
 
+                    if(PresentationUtils.getCode(response)==1010){
+                        while(menuTwoChoice!=3){
+                            System.out.print("\n\nYou are now logged on.\n" +
+                                    "ACTION Menu\n" +
+                                    "To upload <enter 1>\n" +
+                                    "To download <enter 2>\n" +
+                                    "To log off <enter 3>\n" +
+                                    "Enter choice:");
+                            menuTwoChoice = input.nextInt();
+
+                            if(menuTwoChoice == 1){
+                                System.out.print("enter file path:");
+                                path = input.next();
+                                System.out.print("enter title for file:");
+                                title = input.next();
+                                response = ftpClient.uploadFile(user, path, title);
+                                if (PresentationUtils.getCode(response)==1210) {
+                                    System.out.println("Your file has been successfully uploaded to Simple_FTP");
+                                }else{
+                                    System.out.println("Sorry, an error occurred. Your file has not been uploaded.");
+                                }
+                            }
+                        }
                     }
+
+                    System.out.println("\nThe login details provided are not correct\n\n");
+
+
                 }
+
+
             }
             System.out.println("\n\nThank you for using Simple_FTP, Goodbye!");
 
