@@ -16,7 +16,7 @@ public class FtpServer {
 
         //creating some hardcoded system users
         List<User> registeredUsers = new ArrayList<>();
-        User one = new User("a", "a");
+        User one = new User("cgriffin", "password");
         User two = new User("dtrump", "maga");
         User three = new User("hclinton", "emailserver");
         registeredUsers.add(one);
@@ -42,6 +42,10 @@ public class FtpServer {
                 switch (protocalMessage.getCode()) {
                     case 1000:
                         response = logOnRequest(protocalMessage, registeredUsers, loggedOn);
+                        break;
+                    case 1100:
+                        response = logOffRequest(protocalMessage, registeredUsers, loggedOn);
+                        break;
                 }
                 // Now send the echo to the requestor
                 mySocket.sendMessage(request.getAddress(), request.getPort(), response);
@@ -65,18 +69,45 @@ public class FtpServer {
 
         User sentUser = new User(protocolMessage.getDeckOne(), protocolMessage.getDeckTwo());
 
+        if(registeredAndVerified(sentUser, registered)) {
+            if (!active.contains((sentUser.getUserName())))
+                active.add(sentUser.getUserName());
+            return "1010-SUCCESS-" + sentUser.getUserName() + " is logged on";
+        }
+
+        return "1020-ERROR-" + sentUser.getUserName() + " does not match";
+
+    }
+
+    public static String logOffRequest(ProtocolMessage protocolMessage, List registered, List active){
+
+        User sentUser = new User(protocolMessage.getDeckOne(), protocolMessage.getDeckTwo());
+
+        if(active.contains(sentUser.getUserName())) {
+            if(registeredAndVerified(sentUser, registered)) {
+                active.remove(sentUser.getUserName());
+                return "1110-SUCCESS-" + sentUser.getUserName() + " is now logged off";
+            }
+            return "1120-ERROR- details are incorrect";
+        }
+        return "1130-ERROR- this user is not logged in";
+
+    }
+
+
+    public static boolean registeredAndVerified(User sentUser, List registered){
+
         for (Object u : registered) {
             User temp = (User) u;
             boolean credentialsAreGood = temp.getUserName().equals(sentUser.getUserName()) && temp.getPassword().equals(sentUser.getPassword());
-            if ( credentialsAreGood) {
-                if (!active.contains((sentUser.getUserName())))
-                    active.add(sentUser.getUserName());
-                return "1010-ULO-" + sentUser.getUserName() + " is logged on";
+            if( credentialsAreGood) {
+                return true;
             }
         }
-        return "1020-UNF-" + sentUser.getUserName() + " does not match";
-
+        return false;
     }
+
+
 
 
 }

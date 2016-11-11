@@ -21,8 +21,14 @@ public class FtpClient {
         this.clientSocket = new MyClientDatagramSocket();
     }
 
-    public String logOn(String user, String password) throws SocketException, IOException {
-        String protocolMsg = "1000-LON-" + user + "-" + password;
+    public String logOn(String username, String password) throws SocketException, IOException {
+        String protocolMsg = "1000-LON-" + username + "-" + password;
+        clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
+        return clientSocket.receiveMessage();
+    }
+
+    public String logOff(String username, String password) throws SocketException, IOException {
+        String protocolMsg = "1100-LOFF-" + username + "-" + password;
         clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
         return clientSocket.receiveMessage();
     }
