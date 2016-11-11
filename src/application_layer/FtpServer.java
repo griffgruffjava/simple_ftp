@@ -3,13 +3,13 @@ package application_layer;
 import service_layer.DatagramMessage;
 import service_layer.MyServerDatagramSocket;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by t00175569 on 10/11/2016.
  */
 public class FtpServer {
-
 
 
     public static void main(String[] args) {
@@ -39,8 +39,8 @@ public class FtpServer {
 //                String message = request.getMessage();
                 ProtocolMessage protocalMessage = new ProtocolMessage(request.getMessage());
 
-                switch (protocalMessage.getCode()){
-                    case 1000 :
+                switch (protocalMessage.getCode()) {
+                    case 1000:
                         response = logOnRequest(protocalMessage, registeredUsers, loggedOn);
                 }
                 // Now send the echo to the requestor
@@ -65,14 +65,22 @@ public class FtpServer {
 
         User sentUser = new User(protocolMessage.getDeckOne(), protocolMessage.getDeckTwo());
 
-        if(registered.equals(sentUser)) {
-            if(!active.contains((sentUser.getUserName())))
-                active.add(sentUser.getUserName());
-            return "1010-ULO-" + sentUser.getUserName() + " is logged on";
+        for (Object u : registered) {
+            User temp = (User) u;
+            boolean credentialsAreGood = temp.getUserName().equals(sentUser.getUserName()) && temp.getPassword().equals(sentUser.getPassword());
+            if ( credentialsAreGood) {
+                if (!active.contains((sentUser.getUserName())))
+                    active.add(sentUser.getUserName());
+                return "1010-ULO-" + sentUser.getUserName() + " is logged on";
+            }
         }
-        else {
-            return "1020-UNF-" + sentUser.getUserName() + " does not match";
-        }
+        return "1020-UNF-" + sentUser.getUserName() + " does not match";
 
     }
+
+
 }
+
+
+
+

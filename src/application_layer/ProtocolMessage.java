@@ -11,15 +11,15 @@ public class ProtocolMessage {
     private String deckTwo;
 
     public ProtocolMessage(String message){
-        splitMessage(message);
+        splitMessage(message.trim());
     }
 
     public void splitMessage(String message){
         String[] sections = message.split("-");
         setCode(Integer.parseInt(sections[0]));
-        setCall(sections[1]);
-        setDeckOne(sections[2]);
-        setDeckTwo(sections[3]);
+        setCall(sections[1].trim());
+        setDeckOne(sections[2].trim());
+        setDeckTwo(sections[3].trim());
     }
 
     public int getCode() {
