@@ -44,16 +44,16 @@ public class ClientDriver {
                     password = input.next();
                     response = ftpClient.registerUser(user,password);
 
-                    if(PresentationUtils.getCode(response)==910){
+                    if(PresentationUtils.getCode(response)==1910){
                         System.out.println("\n\nRegistration Successful.\n" +
                                             "username: "+ user +
-                                            "password: "+ password);
-                    }else if(PresentationUtils.getCode(response)==930){
+                                            "\npassword: "+ password);
+                    }else if(PresentationUtils.getCode(response)==1930){
                         System.out.println("\n\nSorry, This username is already used.");
                     }else{
                         System.out.println("\n\nSorry, not able to register those details at this time.");
                     }
-                    System.out.println(response);
+//                    System.out.println(response);
                 }
 
                 if(menuOneChoice==2){
@@ -106,7 +106,7 @@ public class ClientDriver {
 //            ftpClient.logOn("hillary_clinton","emailserver");
 //            JOptionPane.showMessageDialog(null, response);
 //            String response = ftpClient.logOff("donald_trump","maga");
-
+//            C:\Users\Finbar\OneDrive\Documents\TestFile.txt
 
 //            String response = ftpClient.uploadFile("donald_trump", "C:\\MyFile.txt", "anotherOne");
 //            ftpClient.downloadFile("donald_trump", "anotherOne");
