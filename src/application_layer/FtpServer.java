@@ -24,10 +24,10 @@ public class FtpServer {
         //creating some hardcoded system users
         List<User> registeredUsers = new ArrayList<>();
         User one = new User("cgriffin", "password");
-        User two = new User("donald_trump", "maga");
+//        User two = new User("donald_trump", "maga");
         User three = new User("hclinton", "emailserver");
         registeredUsers.add(one);
-        registeredUsers.add(two);
+//        registeredUsers.add(two);
         registeredUsers.add(three);
 
         List<String> loggedOn = new ArrayList<>();

@@ -63,7 +63,7 @@ public class FileUtils {
             String load = protocolMessage.getDeckTwo();
             String saveAs = getSaveAs(load);
             String content = getContent(load);
-            String pathToSave = "C:\\ftp_downloads\\"+ saveAs;
+            String pathToSave = "C:\\ftp_downloads\\"+ protocolMessage.getDeckOne() + "\\" +saveAs;
             File file = new File(pathToSave);
 
             //http://www.mkyong.com/java/how-to-write-to-file-in-java-bufferedwriter-example/
@@ -86,8 +86,13 @@ public class FileUtils {
 
     public static boolean createDir(String parentDir, String subDir) {
         String path = "C:\\"+parentDir+"\\"+subDir;
+        Path path1 = Paths.get(path);
+
         try {
-            new File(path).mkdirs();
+            if(Files.notExists(path1)){
+                new File(path).mkdirs();
+            }
+
         }catch (Exception e){
             e.printStackTrace();
             return false;

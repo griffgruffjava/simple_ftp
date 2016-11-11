@@ -51,10 +51,11 @@ public class FtpClient {
 
     public String downloadFile(String username, String filename) throws SocketException, IOException {
         String protocolMsg = "1300-DOWNLOAD-"+ username + "-" + filename;
+        FileUtils.createDir("ftp_downloads",username);
         clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
         ProtocolMessage response = new ProtocolMessage(clientSocket.receiveMessage());
         if(response.getCode()==1315){
-            FileUtils.createDir("ftp_client",username);
+//            FileUtils.createDir("ftp_client",username);
             if (FileUtils.writeContentToClient(response)) {
                 response.setDeckTwo("file saved locally");
             }
