@@ -3,7 +3,10 @@ package application_layer;
 import service_layer.DatagramMessage;
 import service_layer.MyServerDatagramSocket;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,12 +122,36 @@ public class FtpServer {
 
     public static String uploadRequest(ProtocolMessage protocolMessage, List active){
 
-//        if(active.contains(protocolMessage.getDeckOne())){
-//            try{
-//
-//            }
-//        }
-        return null;
+        if(active.contains(protocolMessage.getDeckOne())){
+            try{
+                String load = protocolMessage.getDeckTwo();
+                String saveAs;
+                String content;
+                int splitIndex = load.indexOf(":");
+                saveAs = load.substring(0,splitIndex);
+                content = load.substring(splitIndex+1,load.length());
+                String pathToSave = "C:\\"+protocolMessage.getDeckOne()+"\\"+ saveAs + ".txt";
+//                String pathToSave = "C:\\testFile.txt";
+                File file = new File(pathToSave);
+
+                //http://www.mkyong.com/java/how-to-write-to-file-in-java-bufferedwriter-example/
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                FileWriter fw = new FileWriter(file.getAbsoluteFile());
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(content);
+                bw.close();
+
+                return "1210-SUCCESS-" + saveAs + " has been uploaded to server";
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "1220-ERROR- server failure; file cannot be saved";
+            }
+
+        }
+        return "1230-ERROR-" + protocolMessage.getDeckOne() + " is not logged on; file cannot be saved";
     }
 
 
@@ -160,6 +187,8 @@ public class FtpServer {
         }
         return true;
     }
+
+
 
 
 

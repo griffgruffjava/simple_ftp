@@ -2,10 +2,13 @@ package application_layer;
 
 import service_layer.MyClientDatagramSocket;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by t00175569 on 10/11/2016.
@@ -39,13 +42,34 @@ public class FtpClient {
         return clientSocket.receiveMessage();
     }
 
-    public String uploadFile(String username, String path) throws SocketException, IOException {
-        String protocolMsg = "1200-UPLOAD-" + username + "-" + path;
+    public String uploadFile(String username, String path, String saveAs) throws SocketException, IOException {
+        String protocolMsg = "1200-UPLOAD-" + username + "-" + saveAs + ":" +getFileContent(path);
         clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
         return clientSocket.receiveMessage();
     }
 
     public void closeSocket() throws SocketException {
         clientSocket.close();
+    }
+
+    public static String getFileContent(String path){
+
+
+        String content = "";
+        try {
+
+            Path path1 = Paths.get(path);
+            content = new String(Files.readAllBytes(path1));
+
+
+        }catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return content;
+
+
     }
 }
