@@ -31,13 +31,14 @@ public class FileUtils {
 
     }
 
+
     public static boolean writeContentToFile(ProtocolMessage protocolMessage){
 
         try{
             String load = protocolMessage.getDeckTwo();
             String saveAs = getSaveAs(load);
             String content = getContent(load);
-            String pathToSave = "C:\\"+protocolMessage.getDeckOne()+"\\"+ saveAs + ".txt";
+            String pathToSave = "C:\\ftp_server\\"+protocolMessage.getDeckOne()+"\\"+ saveAs + ".txt";
             File file = new File(pathToSave);
 
             //http://www.mkyong.com/java/how-to-write-to-file-in-java-bufferedwriter-example/
@@ -55,6 +56,43 @@ public class FileUtils {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static boolean writeContentToClient(ProtocolMessage protocolMessage){
+        try{
+            String load = protocolMessage.getDeckTwo();
+            String saveAs = getSaveAs(load);
+            String content = getContent(load);
+            String pathToSave = "C:\\ftp_downloads\\"+ saveAs;
+            File file = new File(pathToSave);
+
+            //http://www.mkyong.com/java/how-to-write-to-file-in-java-bufferedwriter-example/
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(content);
+            bw.close();
+
+            return true;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public static boolean createDir(String parentDir, String subDir) {
+        String path = "C:\\"+parentDir+"\\"+subDir;
+        try {
+            new File(path).mkdirs();
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public static String getSaveAs(String load) {

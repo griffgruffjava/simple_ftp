@@ -54,7 +54,8 @@ public class FtpClient {
         clientSocket.sendMessage(serverHost, serverPort, protocolMsg);
         ProtocolMessage response = new ProtocolMessage(clientSocket.receiveMessage());
         if(response.getCode()==1315){
-            if (FileUtils.writeContentToFile(response)) {
+            FileUtils.createDir("ftp_client",username);
+            if (FileUtils.writeContentToClient(response)) {
                 response.setDeckTwo("file saved locally");
             }
             else {

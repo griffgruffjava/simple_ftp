@@ -21,7 +21,8 @@ public class ProtocolMessage {
         setCode(Integer.parseInt(sections[0]));
         setCall(sections[1].trim());
         setDeckOne(sections[2].trim());
-        setDeckTwo(sections[3].trim());
+        if(null!=sections[3])
+            setDeckTwo(sections[3].trim());
     }
 
     public int getCode() {

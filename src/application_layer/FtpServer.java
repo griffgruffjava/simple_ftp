@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static application_layer.FileUtils.createDir;
+
 /**
  * Created by t00175569 on 10/11/2016.
  */
@@ -22,7 +24,7 @@ public class FtpServer {
         //creating some hardcoded system users
         List<User> registeredUsers = new ArrayList<>();
         User one = new User("cgriffin", "password");
-        User two = new User("dtrump", "maga");
+        User two = new User("donald_trump", "maga");
         User three = new User("hclinton", "emailserver");
         registeredUsers.add(one);
         registeredUsers.add(two);
@@ -84,7 +86,7 @@ public class FtpServer {
         User sentUser = new User(protocolMessage.getDeckOne(), protocolMessage.getDeckTwo());
         if(userNameNotUsed(sentUser.getUserName(), registered)){
             try {
-                createDir(sentUser.getUserName());
+                FileUtils.createDir("ftp_server",sentUser.getUserName());
                 registered.add(sentUser);
                 return "910-SUCCESS-" + sentUser.getUserName() + " is now registered";
             }catch (Exception e){
@@ -142,12 +144,12 @@ public class FtpServer {
     public static ProtocolMessage downloadRequest(ProtocolMessage protocolMessage, List active){
         ProtocolMessage response = new ProtocolMessage();
         if(active.contains(protocolMessage.getDeckOne())){
-            String path = "C:\\" + protocolMessage.getDeckOne() + "\\" + protocolMessage.getDeckTwo();
+            String path = "C:\\ftp_server\\" + protocolMessage.getDeckOne() + "\\" + protocolMessage.getDeckTwo();
             String serverFile = FileUtils.getFileContent(path);
             response.setCode(1315);
             response.setCall("PROCESS");
             response.setDeckOne(protocolMessage.getDeckOne());
-            response.setDeckTwo(serverFile);
+            response.setDeckTwo(protocolMessage.getDeckTwo()+":"+serverFile);
             return response;
 
         }
@@ -182,16 +184,7 @@ public class FtpServer {
         return true;
     }
 
-    public static boolean createDir(String dir) {
-        String path = "C:\\"+dir;
-        try {
-            new File(path).mkdir();
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
+
 
 
 

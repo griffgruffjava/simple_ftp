@@ -16,15 +16,16 @@ public class ClientDriver {
         try {
             FtpClient ftpClient = new FtpClient("localhost", "1024");
 
-            String response = ftpClient.logOn("cgriffin","password");
+//            String response = ftpClient.logOn("cgriffin","password");
 
 //            response = ftpClient.registerUser("donald_trump","maga");
+            String response = ftpClient.logOn("donald_trump","maga");
 //            JOptionPane.showMessageDialog(null, response);
 //            response = ftpClient.logOff("cgriffin","password");
 //            JOptionPane.showMessageDialog(null, response);
 
-            response = ftpClient.uploadFile("cgriffin", "C:\\MyFile.txt", "anotherOne");
-//            response = ftpClient.downloadFile("cgriffin", "testFile");
+//            response = ftpClient.uploadFile("donald_trump", "C:\\MyFile.txt", "anotherOne");
+            response = ftpClient.downloadFile("donald_trump", "anotherOne.txt");
             JOptionPane.showMessageDialog(null, response);
 
             ftpClient.closeSocket();
